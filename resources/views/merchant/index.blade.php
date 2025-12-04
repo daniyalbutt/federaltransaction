@@ -70,6 +70,7 @@
 									<td>{{ $value->created_at->format('d M, Y g:i A') }}</td>
 									<td class="text-end">
 										<div class="d-flex justify-content-end mt-2">
+											<button class="btn btn-secondary shadow btn-xs sharp me-1 test-connection" data-id="{{ $value->id }}"><i class="fas fa-check"></i> Test</button>
 											@can('edit merchant')
 											<a href="{{ route('merchant.edit', $value->id) }}" class="btn btn-primary shadow btn-xs sharp me-1"><i class="fas fa-pencil-alt"></i></a>
 											@endcan
@@ -104,5 +105,21 @@
         temp.remove();
         console.timeEnd('time1');
     }
+	$(document).ready(function(){
+		$('.test-connection').click(function(){
+			let merchantId = $(this).data('id');
+			let button = $(this);
+			button.prop('disabled', true).text('Testing...');
+
+			$.get('/merchant/test/' + merchantId, function(response){
+				if(response.status === 'success'){
+					alert(response.message);
+				} else {
+					alert('Error: ' + response.message);
+				}
+				button.prop('disabled', false).html('<i class="fas fa-check"></i> Test');
+			});
+		});
+	});
 </script>
 @endpush

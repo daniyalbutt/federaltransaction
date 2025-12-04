@@ -67,7 +67,9 @@
 											<span class="w-space-no">{{ $value->client->name }} <br> {{ $value->client->email }}</span>
 										</div>
 									</td>
-									<td>{{ $value->package }}<br>${{ $value->price }}</td>
+									<td>
+										{{ $value->package }}<br>${{ $value->price }}
+									</td>
 									<td><span class="badge light badge-info">{{ $value->client->brand->name }}</span> <br> <span class="badge light badge-secondary mt-1">{{ $value->merchants != null ? $value->merchants->name : '' }} - {{ $value->merchants != null ? $value->merchants->getMerchant() : '' }}</span></td>
 									<td>
 										<span class="badge light {{ $value->get_badge_status() }}">{{ $value->get_status() }}</span>

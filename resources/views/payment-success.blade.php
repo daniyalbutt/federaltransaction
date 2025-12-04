@@ -60,7 +60,7 @@
             font-size: 24px;
             font-weight: 400;
             color: black;
-            margin-bottom: 40px;
+            margin-bottom: 10px;
         }
         h4, h5, h6 {
             font-family: "Rubik";
@@ -101,11 +101,7 @@
                         @else
                         <h6>Payment done Successfully</h6>
                         @endif
-                        @if($data->merchant == 3)
-                        <p>Our Billing Team will reach you out if there will be any issues with your payment</p>
-                        @else
-                        <p>Your will be redirected to the homepage shortly or click here to return to homepage. {{ $transaction_id != '' ?  'Your transaction ID: '. $transaction_id : '' }}</p>
-                        @endif
+                        <p>{{ $transactionMessage }}</p>
                     </div>
                 </div>
             </div>

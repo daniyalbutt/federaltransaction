@@ -10,6 +10,7 @@ use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\ScrappedController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PayPalController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,6 +36,14 @@ Route::get('success/{id}', [StripeController::class, 'successPayment'])->name('s
 Route::get('declined/{id}', [StripeController::class, 'declinedPayment'])->name('declined.payment');
 Route::get('export', [FrontController::class, 'export'])->name('export');
 
+Route::prefix('paypal')->group(function () {
+    Route::post('create/{id}', [PayPalController::class, 'createOrder'])->name('paypal.create');
+    Route::post('capture/{id}', [PayPalController::class, 'captureOrder'])->name('paypal.capture');
+    Route::get('cancel/{id}', [PayPalController::class, 'paymentCancel'])->name('paypal.cancel');
+    Route::post('success/{id}', [PayPalController::class, 'paymentSuccess'])->name('paypal.success');
+});
+
+
 // Route::get('stripe', [StripeController::class, 'stripe']);
 Route::post('stripe', [StripeController::class, 'stripePost'])->name('stripe.post');
 Route::post('process-payment', [StripeController::class, 'processPayment'])->name('process.payment');
@@ -47,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('payment', PaymentController::class);
     Route::resource('brand', BrandsController::class);
     Route::resource('merchant', MerchantController::class);
+    Route::get('merchant/test/{id}', [MerchantController::class, 'testConnection'])->name('merchant.test');
     Route::get('show/response/{id}', [App\Http\Controllers\HomeController::class, 'showResponse'])->name('show.response');
     Route::get('payment/delete/{id}', [PaymentController::class, 'delete'])->name('payment.delete');
     Route::post('paid', [PaymentController::class, 'paid'])->name('payment.paid');

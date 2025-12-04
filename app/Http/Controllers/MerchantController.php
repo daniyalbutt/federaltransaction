@@ -6,6 +6,8 @@ use App\Models\Merchant;
 use App\Http\Requests\StoreMerchantRequest;
 use App\Http\Requests\UpdateMerchantRequest;
 use Illuminate\Http\Request;
+use net\authorize\api\contract\v1 as AnetAPI;
+use net\authorize\api\controller as AnetController;
 
 class MerchantController extends Controller
 {
@@ -116,5 +118,57 @@ class MerchantController extends Controller
     public function destroy(Merchant $merchant)
     {
         //
+    }
+
+    public function testConnection($id)
+    {
+        $merchant = Merchant::findOrFail($id);
+
+        try {
+            if ($merchant->merchant == 0) {
+                \Stripe\Stripe::setApiKey($merchant->private_key);
+                \Stripe\Customer::all(['limit' => 1]);
+            } elseif ($merchant->merchant == 4) {
+                $merchantAuth = new AnetAPI\MerchantAuthenticationType();
+                $merchantAuth->setName($merchant->public_key);
+                $merchantAuth->setTransactionKey($merchant->private_key);
+
+                // Create request
+                $request = new AnetAPI\GetMerchantDetailsRequest();
+                $request->setMerchantAuthentication($merchantAuth); // Important!
+
+                $controller = new AnetController\GetMerchantDetailsController($request);
+                if($merchant->sandbox == 1){
+                    $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::SANDBOX);
+                }else{
+                    $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+                }
+
+                if ($response != null && $response->getMessages()->getResultCode() === "Ok") {
+                    return response()->json(['status' => 'success', 'message' => 'Connection successful!']);
+                } else {
+                    $error = $response->getMessages()->getMessage()[0]->getText() ?? 'Unknown error';
+                    return response()->json(['status' => 'error', 'message' => $error]);
+                }
+            }elseif($merchant->merchant == 5){
+                $apiContext = new \PayPal\Rest\ApiContext(
+                    new \PayPal\Auth\OAuthTokenCredential(
+                        $merchant->public_key,
+                        $merchant->private_key
+                    )
+                );
+                $apiContext->setConfig(['mode' => $merchant->sandbox ? 'sandbox' : 'live']);
+                $testPayment = new \PayPal\Api\Payment();
+                try {
+                    $testPayment->getList(['count' => 1], $apiContext);
+                    return response()->json(['status' => 'success', 'message' => 'PayPal connection successful!']);
+                } catch (\Exception $e) {
+                    return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+                }
+            }
+            return response()->json(['status' => 'success', 'message' => 'Connection successful!']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 }

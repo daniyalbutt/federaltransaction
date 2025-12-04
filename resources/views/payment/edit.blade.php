@@ -89,8 +89,8 @@ $editable = $data->status == 0; // editable only if PENDING
 
                                     <div class="col-md-3">
                                         <div class="form-group mb-3">
-                                            <label class="form-label">Amount ($)</label>
-                                            <input type="number" step="any" class="form-control" name="price" value="{{ old('price', $data->price) }}" {{ $editable ? '' : 'disabled' }}>
+                                            <label class="form-label">Tax Amount ($)</label>
+                                            <input type="number" step="any" class="form-control" name="tax_amount" value="{{ old('tax_amount', $data->tax_amount) }}" {{ $editable ? '' : 'disabled' }}>
                                         </div>
                                     </div>
 

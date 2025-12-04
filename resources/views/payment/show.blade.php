@@ -61,7 +61,13 @@
 									<div class="col-md-3">
 										<div class="form-group mb-3">
 											<label class="form-label">Amount ($)</label>
-											<input type="number" class="form-control" name="l_name" required step="any" value="{{ $data->price }}">
+											<input type="number" class="form-control" name="price" required step="any" value="{{ $data->price }}">
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group mb-3">
+											<label class="form-label">Tax Amount ($)</label>
+											<input type="number" class="form-control" name="tax_amount" required step="any" value="{{ $data->tax_amount }}">
 										</div>
 									</div>
 									<div class="col-md-3">
@@ -70,7 +76,7 @@
 											<input type="text" class="form-control" name="brand_name" required value="{{ $data->merchants->name }} - {{ $data->merchants->getMerchant() }}">
 										</div>
 									</div>
-									<div class="col-md-12">
+									<div class="col-md-9">
 										<div class="form-group mb-3">
 											<label class="form-label">Discription</label>
 											<textarea class="form-control" name="description" id="description" cols="30" rows="2">{{ $data->description }}</textarea>

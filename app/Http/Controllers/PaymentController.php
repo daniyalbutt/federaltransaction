@@ -80,26 +80,23 @@ class PaymentController extends Controller
             'package' => 'required',
             'tax_amount' => 'required',
         ]);
-
         $client = Client::where('email', $request->email)->first();
         $client_id = 0;
-
         if($client == null){
             $data = Client::create($request->all());
             $client_id = $data->id;
         }else{
             $client_id = $client->id;
         }
-
         $totalPrice = 0;
-
         if ($request->has('items')) {
             foreach ($request->items as $item) {
-                if (isset($item['price'])) {
-                    $totalPrice += (float) $item['price'];
+                if (isset($item['fee_amount'])) {
+                    $totalPrice += (float) $item['fee_amount'];
                 }
             }
         }
+        $totalPrice += (float) $request->tax_amount;
         $payment = new Payment();
         $payment->package = $request->package;
         $payment->price = $totalPrice;
@@ -175,11 +172,12 @@ class PaymentController extends Controller
         $totalPrice = 0;
         if ($request->has('items')) {
             foreach ($request->items as $item) {
-                if (isset($item['price'])) {
-                    $totalPrice += (float) $item['price'];
+                if (isset($item['fee_amount'])) {
+                    $totalPrice += (float) $item['fee_amount'];
                 }
             }
         }
+        $totalPrice += (float) $request->tax_amount;
         $payment->update([
             'package'     => $request->package,
             'price'       => $totalPrice,
@@ -237,7 +235,7 @@ class PaymentController extends Controller
         $results = [];
         foreach ($items as $item) {
             $results[] = [
-                'label' => $item->name,
+                'label' => $item->name . ' - ' . $item->fee_amount,
                 'value' => $item->name,
                 'description' => $item->description,
                 'fee_amount' => $item->fee_amount,

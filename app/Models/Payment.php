@@ -11,6 +11,10 @@ class Payment extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'payment_data' => 'array',
+    ];
+
     public function client(){
         return $this->hasOne(Client::class, 'id', 'client_id');
     }

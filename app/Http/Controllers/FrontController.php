@@ -24,27 +24,28 @@ class FrontController extends Controller
      */
     public function payNow($id)
     {
-        $data = Payment::where('unique_id', $id)->first();
-        if($data->show_status == 1){
-            return abort(404);
-        }
-        if($data->status == 1){
-            return redirect()->route('declined.payment', ['id' => $data->id]);
-        }
-        if($data->status == 2){
-            return redirect()->route('success.payment', ['id' => $data->id]);
-        }
-        $merchant_type = $data->merchants->merchant;
-        if($merchant_type == 0){
-            return view('stripe', compact('data'));
-        }else if($merchant_type == 3){
-            return view('payment', compact('data'));
-        }else if($merchant_type == 4){
-            return view('authorize', compact('data'));
-        }else{
-            return view('square', compact('data'));
-        }
+        $data = Payment::where('unique_id', $id)
+            ->with(['merchants', 'items'])
+            ->firstOrFail();
+
+        if ($data->show_status == 1) abort(404);
+        if ($data->status == 1) return redirect()->route('declined.payment', $data->id);
+        if ($data->status == 2) return redirect()->route('success.payment', $data->id);
+        if (!$data->merchants) abort(500, 'Merchant is not assigned.');
+
+        $merchantType = $data->merchants->merchant;
+
+        return match ($merchantType) {
+            0 => view('stripe', compact('data')),
+            3 => view('payment', compact('data')),
+            4 => view('authorize', compact('data')),
+            5 => view('paypal', compact('data')),
+            default => view('square', compact('data')),
+        };
     }
+
+
+
     
     public function paymentSave(Request $request){
         $data = Payment::find($request->input('id'));

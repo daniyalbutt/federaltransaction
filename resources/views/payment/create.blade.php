@@ -147,51 +147,61 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    let itemIndex = 1; // start from 1 because 0 is already in HTML
+    let itemIndex = 1;
+	const sourceUrl = "{{ route('items.autocomplete') }}";
+
+	function initAutocomplete($input) {
+        if (typeof $.ui === 'undefined' || typeof $input.autocomplete !== 'function') {
+            console.warn('jQuery UI Autocomplete not available. Make sure jQuery UI JS & CSS are loaded.');
+            return;
+        }
+
+        $input.autocomplete({
+            source: sourceUrl,
+            minLength: 1,
+            select: function(event, ui) {
+                let row = $(this).closest('tr');
+                row.find('.item-description').val(ui.item.description || '');
+                row.find('.item-fee-amount').val(ui.item.fee_amount || '');
+                row.find('.item-fee-code').val(ui.item.fee_code || '');
+            }
+        });
+    }
+
+	$('#invoice-items-table').find('.item-name').each(function() {
+        initAutocomplete($(this));
+    });
+
 
     $('#add-item').click(function() {
         let newRow = `
             <tr class="invoice-item-row">
                 <td>
-					<input type="text" name="items[${itemIndex}][name]" class="form-control item-name" required>
-				</td>
+                    <input type="text" name="items[${itemIndex}][name]" class="form-control item-name" required>
+                </td>
                 <td>
-					<textarea name="items[${itemIndex}][description]" class="form-control item-description"></textarea>
-				</td>
+                    <textarea name="items[${itemIndex}][description]" class="form-control item-description"></textarea>
+                </td>
                 <td>
-					<input type="number" step="any" name="items[${itemIndex}][fee_amount]" class="form-control item-fee-amount" required>
-				</td>
+                    <input type="number" step="any" name="items[${itemIndex}][fee_amount]" class="form-control item-fee-amount" required>
+                </td>
                 <td>
-					<input type="text" name="items[${itemIndex}][fee_code]" class="form-control item-fee-code">
-				</td>
+                    <input type="text" name="items[${itemIndex}][fee_code]" class="form-control item-fee-code">
+                </td>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm remove-item">Remove</button>
                 </td>
             </tr>
         `;
         $('#invoice-items-table tbody').append(newRow);
+        let $newInput = $('#invoice-items-table tbody tr').last().find('.item-name');
+        initAutocomplete($newInput);
         itemIndex++;
     });
 
-    // Remove row
     $(document).on('click', '.remove-item', function() {
         $(this).closest('tr').remove();
     });
-
-	function attachAutocomplete() {
-        $('.item-name').autocomplete({
-            source: "{{ route('items.autocomplete') }}",
-            minLength: 1,
-            select: function(event, ui) {
-                let row = $(this).closest('tr');
-                row.find('.item-description').val(ui.item.description);
-                row.find('.item-fee-amount').val(ui.item.fee_amount);
-                row.find('.item-fee-code').val(ui.item.fee_code);
-            }
-        });
-    }
-
-    attachAutocomplete();
 });
 </script>
 @endpush

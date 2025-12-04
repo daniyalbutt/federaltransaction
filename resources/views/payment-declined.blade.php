@@ -12,7 +12,6 @@
         .container {
             background: no-repeat;
             padding: 0px 15px;
-            width: auto;
             border-radius: 0;
             box-shadow: none;
         }
@@ -60,7 +59,7 @@
             font-size: 24px;
             font-weight: 400;
             color: black;
-            margin-bottom: 40px;
+            margin-bottom: 10px;
         }
         h4, h5, h6 {
             font-family: "Rubik";
@@ -92,12 +91,12 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="payment-wrapper payment-declined">
-                        <a class="close-icon" href="index.php">
+                        <a class="close-icon" href="#">
                         <img src="{{ asset('images/close-icon.png') }}">
                         </a>
                         <h1>Payment Declined</h1>
                         <h6>Your payment was declined</h6>
-                        <p>Your payment was declined. Kindly contact your Bank to approve the transaction or use a different payment method.</p>
+                        <p>{{ $transactionMessage }}</p>
                     </div>
                 </div>
             </div>
