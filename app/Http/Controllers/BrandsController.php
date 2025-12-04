@@ -48,6 +48,7 @@ class BrandsController extends Controller
         $request->validate([
             'name' => 'required',
             'image' => 'required',
+            'background_image' => 'required',
             'address_first_line' => 'required',
             'address_second_line' => 'required',
             'address_third_line' => 'required',
@@ -62,6 +63,11 @@ class BrandsController extends Controller
             $imageName = time().'.'.$request->image->extension();
             $request->image->move(public_path('images'), $imageName);
             $data->image = 'images/'.$imageName;
+        }
+        if ($request->hasFile('background_image')) {
+            $bgName = time().'_background.'.$request->background_image->extension();
+            $request->background_image->move(public_path('images'), $bgName);
+            $data->background_image = 'images/'.$bgName;
         }
         $data->save();
         return redirect()->back()->with('success', 'Brand Created Successfully');   
@@ -115,6 +121,11 @@ class BrandsController extends Controller
             $imageName = time().'.'.$request->image->extension();
             $request->image->move(public_path('images'), $imageName);
             $data->image = 'images/'.$imageName;
+        }
+        if ($request->hasFile('background_image')) {
+            $bgName = time().'_background.'.$request->background_image->extension();
+            $request->background_image->move(public_path('images'), $bgName);
+            $data->background_image = 'images/'.$bgName;
         }
         $data->save();
         return redirect()->back()->with('success', 'Brand Updated Successfully');   

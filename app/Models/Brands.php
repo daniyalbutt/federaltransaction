@@ -13,6 +13,7 @@ class Brands extends Model
         'name',
         'status',
         'image',
+        'background_image',
         'address_first_line',
         'address_second_line',
         'address_third_line'

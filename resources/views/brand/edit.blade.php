@@ -39,6 +39,12 @@
 									</div>
 									<div class="col-md-4">
 										<div class="form-group mb-3">
+											<label class="form-label">Background Image</label>
+											<input type="file" class="form-control" name="background_image">
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group mb-3">
 											<label class="form-label">Name</label>
 											<input type="text" class="form-control" name="name" value="{{ $data->name }}" required value="{{ old('name') }}">
 										</div>
