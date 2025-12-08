@@ -8,6 +8,8 @@ use Exception;
 use App\Models\Payment;
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
+use App\Mail\PaymentStatusMail;
+use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Http\Request;
 
@@ -47,6 +49,7 @@ class StripeController extends Controller
                     'return_response' => json_encode($chargeJson),
                     'payment_data' => $request->except(['amount','_token','id','stripeToken'])
                 ]);
+                Mail::to(env('ADMIN_EMAIL'))->send(new PaymentStatusMail($data));
                 return redirect()->route('success.payment', ['id' => $data->id]);
             }
             $data->update([
@@ -54,6 +57,7 @@ class StripeController extends Controller
                 'return_response' => json_encode($chargeJson),
                 'payment_data' => $request->except(['amount','_token','id','stripeToken'])
             ]);
+            Mail::to(env('ADMIN_EMAIL'))->send(new PaymentStatusMail($data));
             return redirect()->route('declined.payment', ['id' => $data->id]);
         } catch (\Stripe\Exception\ApiErrorException $e) {
             $data->update([
@@ -62,6 +66,7 @@ class StripeController extends Controller
                 'square_response' => json_encode($e->getError()),
                 'payment_data' => $request->except(['amount','_token','id','stripeToken'])
             ]);
+            Mail::to(env('ADMIN_EMAIL'))->send(new PaymentStatusMail($data));
             return redirect()->route('declined.payment', ['id' => $data->id]);
 
         } catch (\Exception $e) {
@@ -71,6 +76,7 @@ class StripeController extends Controller
                 'square_response' => null,
                 'payment_data' => $request->except(['amount','_token','id','stripeToken'])
             ]);
+            Mail::to(env('ADMIN_EMAIL'))->send(new PaymentStatusMail($data));
             return redirect()->route('declined.payment', ['id' => $data->id]);
         }
     }

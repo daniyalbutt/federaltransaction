@@ -14,6 +14,9 @@
 
 <body>
     <div id="invoice" style="position:absolute; left:-9999px; top:-9999px;">
+        <div class="invoice-bg">
+            <img src="{{ asset($data->client->brand->background_image) }}" alt="{{ $data->client->brand->name }}">
+        </div>
         <div class="invoice">
             <div class="invoice-header">
                 <img src="{{ asset($data->client->brand->image) }}" alt="{{ $data->client->brand->name }}">

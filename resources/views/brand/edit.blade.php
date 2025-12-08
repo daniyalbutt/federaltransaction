@@ -35,12 +35,18 @@
 										<div class="form-group mb-3">
 											<label class="form-label">Image</label>
 											<input type="file" class="form-control" name="image">
+											@if($data->image)
+												<a href="{{ asset($data->image) }}" target="_blank" class="mt-2 d-block">View Current Image</a>
+											@endif
 										</div>
 									</div>
 									<div class="col-md-4">
 										<div class="form-group mb-3">
 											<label class="form-label">Background Image</label>
 											<input type="file" class="form-control" name="background_image">
+											@if($data->background_image)
+												<a href="{{ asset($data->background_image) }}" target="_blank" class="mt-2 d-block">View Current Background Image</a>
+											@endif
 										</div>
 									</div>
 									<div class="col-md-4">

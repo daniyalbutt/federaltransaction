@@ -117,8 +117,12 @@ class MerchantController extends Controller
      */
     public function destroy(Merchant $merchant)
     {
-        //
+        $merchant->status = $merchant->status == 1 ? 0 : 1;
+        $merchant->save();
+        $message = $merchant->status == 1 ? 'Merchant Activated successfully.' : 'Merchant Deactivated successfully.';
+        return redirect()->back()->with('success', $message);
     }
+
 
     public function testConnection($id)
     {

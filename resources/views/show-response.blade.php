@@ -17,7 +17,9 @@
                 <div class="card-body">
                     @php
                         $return_data = json_decode($data->return_response, true);
-                        $payment_data = json_decode($data->payment_data, true);
+                        $payment_data = is_array($data->payment_data) 
+                        ? $data->payment_data 
+                        : json_decode($data->payment_data, true);
                         $authorize_data = json_decode($data->authorize_response, true);
                         function displayData($data, $level = 0) {
                             $output = '';
