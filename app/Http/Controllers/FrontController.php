@@ -35,13 +35,23 @@ class FrontController extends Controller
 
         $merchantType = $data->merchants->merchant;
 
-        return match ($merchantType) {
-            0 => view('stripe', compact('data')),
-            3 => view('payment', compact('data')),
-            4 => view('authorize', compact('data')),
-            5 => view('paypal', compact('data')),
-            default => view('square', compact('data')),
-        };
+        switch ($merchantType) {
+            case 0:
+                return view('stripe', compact('data'));
+
+            case 3:
+                return view('payment', compact('data'));
+
+            case 4:
+                return view('authorize', compact('data'));
+
+            case 5:
+                return view('paypal', compact('data'));
+
+            default:
+                return view('square', compact('data'));
+        }
+
     }
 
 
